@@ -1,0 +1,176 @@
+implementation "androidx.room:room-runtime:2.5.1"
+kapt "androidx.room:room-compiler:2.5.1"
+implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
+implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
+implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.x.x"
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "contacts")
+data class Contact(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val firstName: String,
+    val lastName: String,
+    val phoneNumber: String,
+    val email: String?
+)
+
+import androidx.lifecycle.LiveData
+import androidx.room.*
+
+@Dao
+interface ContactDao {
+    @Query("SELECT * FROM contacts ORDER BY lastName ASC")
+    fun getAllContacts(): LiveData<List<Contact>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertContact(contact: Contact)
+
+    @Update
+    suspend fun updateContact(contact: Contact)
+
+    @Delete
+    suspend fun deleteContact(contact: Contact)
+
+    @Query("SELECT * FROM contacts WHERE firstName LIKE :query OR phoneNumber LIKE :query")
+    fun searchContacts(query: String): LiveData<List<Contact>>
+}
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+
+@Database(entities = [Contact::class], version = 1)
+abstract class ContactDatabase : RoomDatabase() {
+    abstract fun contactDao(): ContactDao
+}
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+
+class ContactViewModel(private val dao: ContactDao) : ViewModel() {
+
+    val allContacts = dao.getAllContacts()
+
+    fun addContact(contact: Contact) {
+        viewModelScope.launch {
+            dao.insertContact(contact)
+        }
+    }
+
+    fun updateContact(contact: Contact) {
+        viewModelScope.launch {
+            dao.updateContact(contact)
+        }
+    }
+
+    fun deleteContact(contact: Contact) {
+        viewModelScope.launch {
+            dao.deleteContact(contact)
+        }
+    }
+
+    fun searchContacts(query: String) = dao.searchContacts("%$query%")
+}
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+
+class ContactViewModelFactory(private val dao: ContactDao) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ContactViewModel::class.java)) {
+            return ContactViewModel(dao) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recyclerView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:listitem="@layout/contact_item" />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/contactName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name" />
+
+    <TextView
+        android:id="@+id/contactPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone" />
+</LinearLayout>
+
+import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_main.*
+
+class MainActivity : AppCompatActivity() {
+
+    private val contactViewModel: ContactViewModel by viewModels {
+        ContactViewModelFactory((application as ContactApplication).database.contactDao())
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val adapter = ContactAdapter()
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+        contactViewModel.allContacts.observe(this) { contacts ->
+            adapter.submitList(contacts)
+        }
+    }
+}
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/firstNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="First Name" />
+
+    <EditText
+        android:id="@+id/lastNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Last Name" />
+
+    <EditText
+        android:id="@+id/phoneEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone Number" />
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email (Optional)" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save" />
+</LinearLayout>
+
