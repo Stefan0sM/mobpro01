@@ -16,31 +16,24 @@
 ##Εγκατάσταση
 1. Κλωνοποίηση repository:
    ```bash
-   git clone https://github.com/yourusername/contact-management-app.git
-Άνοιγμα project στο Android Studio:
+   https://github.com/Stefan0sM/mobpro01/blob/main/mobpro
+2. Άνοιγμα project στο Android Studio
+3. Επιλέξτε το φάκελο του project
+4. Εκτέλεση σε emulator ή συσκευή
+5. Χρησιμοποιήστε ένα Android device με API 24+
 
-Επιλέξτε το φάκελο του project.
-
-Εκτέλεση σε emulator ή συσκευή:
-
-Χρησιμοποιήστε ένα Android device με API 24+.
-
-🛠️ Τεχνολογίες
-Kotlin
-
-Android Studio
-
-Room Database
-
-gradle
+##Τεχνολογίες
+1. Kotlin
+2. Android Studio
+3. Room Database
+4. gradle
 implementation "androidx.room:room-runtime:2.5.1"
 kapt "androidx.room:room-compiler:2.5.1"
 ViewModel & LiveData
-
-gradle
 implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
 implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
-📂 Δομή Project
+
+##Δομή Project
 /app
 ├── /src/main/java/com/example/contactapp
 │   ├── /data
@@ -51,7 +44,7 @@ implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
 │   │   ├── ContactViewModel.kt
 │   │   ├── ContactAdapter.kt
 │   │   └── MainActivity.kt
-│   └── /di                     # (Προαιρετικό για Dependency Injection)
+│   └── /di
 └── /res
     ├── /layout
     │   ├── activity_main.xml
@@ -60,4 +53,5 @@ implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
 
 ##Βιβλιογραφία
 Android Developers. (n.d.). Room Database Guide
-GeeksforGeeks. (2023). MVVM in Android
+   ```bash
+   [https://github.com/Stefan0sM/mobpro01/blob/main/mobpro](https://developer.android.com/training/data-storage/room)
