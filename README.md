@@ -36,19 +36,32 @@ implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
 ##Δομή Project
 /app
 ├── /src/main/java/com/example/contactapp
+
 │   ├── /data
+
 │   │   ├── Contact.kt          # Entity
+
 │   │   ├── ContactDao.kt       # DAO
+
 │   │   └── ContactDatabase.kt  # Database
+
 │   ├── /ui
+
 │   │   ├── ContactViewModel.kt
+
 │   │   ├── ContactAdapter.kt
+
 │   │   └── MainActivity.kt
+
 │   └── /di
+
 └── /res
-    ├── /layout
-    │   ├── activity_main.xml
-    │   └── contact_item.xml
+
+ ├── /layout
+    
+ │   ├── activity_main.xml
+    
+   │   └── contact_item.xml
 
 
 ##Βιβλιογραφία
