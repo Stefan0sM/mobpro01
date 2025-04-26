@@ -67,4 +67,4 @@ implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
 ##Βιβλιογραφία
 Android Developers. (n.d.). Room Database Guide
    ```bash
-   [https://github.com/Stefan0sM/mobpro01/blob/main/mobpro](https://developer.android.com/training/data-storage/room)
+   https://developer.android.com/training/data-storage/room
